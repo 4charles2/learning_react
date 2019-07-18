@@ -7,16 +7,21 @@ import Card from "./Card";
 
 
 class App extends Component {
+    handleCardClick(card){
+        console.log(card, 'clicked')
+    }
     render() {
+        const won = new Date().getSeconds() % 2 === 0
         return (
             <div className="memory">
                 <GuessCount guesses={0}/>
-                <Card card="🎉" feedback="justMatched"  onClick={this.handleClick}/>
-                <Card card="😁" feedback="hidden" onClick={this.handleClick}/>
-                <Card card="❤"  feedback="justMismatched"  onClick={this.handleClick}/>
-                <Card card="🎩" feedback="visible"  onClick={this.handleClick}/>
-                <Card card="🐱" feedback="hidden"  onClick={this.handleClick}/>
-                <Card card="👀" feedback="justMatched"  onClick={this.handleClick}/>
+                <Card card="🎉" feedback="justMatched"  onClick={this.handleCardClick}/>
+                <Card card="😁" feedback="hidden" onClick={this.handleCardClick}/>
+                <Card card="❤"  feedback="justMismatched"  onClick={this.handleCardClick}/>
+                <Card card="🎩" feedback="visible"  onClick={this.handleCardClick}/>
+                <Card card="🐱" feedback="hidden"  onClick={this.handleCardClick}/>
+                <Card card="👀" feedback="justMatched"  onClick={this.handleCardClick}/>
+                {won && <p>GAGNÉ ! </p>}
             </div>
         );
     }
