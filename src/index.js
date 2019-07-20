@@ -4,6 +4,16 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+
+function Demo({ cssClass, title }) {
+    return <h1 class={cssClass}>{title}</h1>
+}
+
+ReactDOM.render(
+    <Demo cssClass="brittle" title="Not so good" />,
+    document.getElementById('root')
+)
+
 //Fichier test pour le cour a suprimer ulterieurement
 //todo A suprimer uniquement present pour les test du tuto
 //import Greeter from './TEST/Greeter';
