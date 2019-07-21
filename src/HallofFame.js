@@ -1,6 +1,7 @@
 import React from 'react'
 
 import './HallOfFame.css'
+import PropTypes from "prop-types";
 
 const HallOfFame = ({ entries }) => (
     <table className="hallOfFame">
@@ -18,6 +19,17 @@ const HallOfFame = ({ entries }) => (
         </tbody>
     </table>
 )
+
+HallOfFame.propTypes = {
+    entries: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            guesses: PropTypes.number.isRequired,
+            date: PropTypes.string.isRequired,
+            player: PropTypes.string.isRequired
+        })
+    ).isRequired
+}
 
 export default HallOfFame
 
