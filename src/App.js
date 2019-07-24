@@ -9,9 +9,16 @@ import HallOfFame, {FAKE_HOF} from "./HallofFame"
 
 const SIDE = 6
 const SYMBOLS = '😀🎉💖🎩🐶🐱🦄🐬🌍🌛🌞💫🍎🍌🍓🍐🍟🍿'
+const VISUAL_PAUSE_MSECS = 750
 
 class App extends Component {
-    cards = this.generateCards()
+    state = {
+        cards: this.generateCards(),
+        currentPair: [],
+        guesses: 0,
+        matchedCardIndices: []
+    }
+    //cards = this.generateCards()
 
     generateCards() {
         const result = []
@@ -25,26 +32,78 @@ class App extends Component {
         return shuffle(result)
     }
 
-    handleCardClick(card) {
-        console.log(card, 'clicked', this)
+    handleCardClick = (index) => {
+        const { currentPair } = this.state
+        console.log(index, ' index de la card clicked', this)
+
+        if(currentPair.length === 2) {
+            return
+        }
+
+        if (currentPair.length === 0) {
+            this.setState({ currentPair: [index] })
+            return
+        }
+        this.handleNewPairClosedBy(index)
+
     }
 
     render() {
-       // const won = new Date().getSeconds() % 2 === 0
+        const {cards, guesses, matchedCardIndices} = this.state
+        //Date().getSeconds() % 2 === 0
+        const won = matchedCardIndices.length === cards.length
         return (
             <div className="memory">
-                <GuessCount />
-                {this.cards.map((card, index) => (
+                <GuessCount guesses={guesses}/>
+                {cards.map((card, index) => (
                     <Card
                         card={card}
-                        feedback="visible"
+                        feedback={this.getFeedbackForCard(index)}
                         key={index}
-                        onClick={card => this.handleCardClick(card)}
+                        index={index}
+                        onClick={this.handleCardClick}
                     />
                 ))}
                 {<HallOfFame entries={FAKE_HOF} /> }
             </div>
         )
+    }
+
+    /**
+     * Défnie si les cartes doivent être retourné ou pas.
+     * Si il y a déjà une carte de retourne ou pas
+     * Si Il y a matche ou pas
+     * @param index
+     * @returns {string}
+     */
+    getFeedbackForCard(index) {
+        const {currentPair, matchedCardIndices } = this.state
+        const indexMatched = matchedCardIndices.includes(index)
+
+        if (currentPair.lenght < 2) {
+            return indexMatched || index === currentPair[0] ? 'visible' : 'hidden'
+        }
+
+        if (currentPair.includes(index)) {
+            return indexMatched ? 'justMatched' : "justMismatched"
+        }
+
+        return indexMatched ? 'visible' : 'hidden'
+    }
+    handleNewPairClosedBy(index) {
+        const { cards, currentPair, guesses, matchedCardIndices } = this.state
+
+        const newPair = [currentPair[0], index]
+        const newGuesses = guesses + 1
+        const matched = cards[newPair[0]] === cards[newPair[1]]
+
+        this.setState({currentPair: newPair, guesses: newGuesses})
+
+        if(matched)
+            this.setState({matchedCardIndices: [...matchedCardIndices, ...newPair]
+        })
+
+        setTimeout(() => this.setState({currentPair: []}), VISUAL_PAUSE_MSECS)
     }
 }
 
